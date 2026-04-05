@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOSSIER VOL — Visual Operating Language v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&display=swap" rel="stylesheet">
+<style>
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  DOSSIER VOL v3.0 — VISUAL OPERATING LANGUAGE                     ║
+   ║  Complete Design Token System & Component Grammar                   ║
+   ║  For Intelligence-Style Geospatial Products                         ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── SUBSTRATE PALETTE ── */
+  --sub-void:       #0A0A0A;
+  --sub-ink:        #151515;
+  --sub-charcoal:   #1E1E1E;
+  --sub-graphite:   #2A2A2A;
+  --sub-slate:      #333333;
+  --sub-terrain:    #5D685C;
+  --sub-kraft:      #A6927E;
+  --sub-leather:    #7B5842;
+  --sub-grey:       #8A8D8C;
+  --sub-bone:       #D4CFC8;
+  --sub-archival:   #F0F0F0;
+
+  /* ── TACTICAL MARKERS ── */
+  --mark-blue:      #0055D4;
+  --mark-blue-lt:   #29A5FF;
+  --mark-orange:    #FF6600;
+  --mark-pink:      #FF007F;
+  --mark-yellow:    #E5FF00;
+  --mark-green:     #00FF88;
+  --mark-red:       #FF2233;
+  --mark-cyan:      #00E5FF;
+  --mark-violet:    #B84DFF;
+
+  /* ── SEMANTIC STATES ── */
+  --state-active:   var(--mark-yellow);
+  --state-warning:  var(--mark-orange);
+  --state-critical: var(--mark-red);
+  --state-nominal:  var(--mark-green);
+  --state-info:     var(--mark-blue-lt);
+  --state-inert:    var(--sub-grey);
+
+  /* ── HEATMAP RAMP ── */
+  --heat-0: #0A0A0A;
+  --heat-1: #1a0a2e;
+  --heat-2: #3b0764;
+  --heat-3: #7c2d8e;
+  --heat-4: #c2185b;
+  --heat-5: #FF007F;
+  --heat-6: #FF6600;
+  --heat-7: #E5FF00;
+  --heat-8: #FFFFFF;
+
+  /* ── TYPE SCALE ── */
+  --type-display:   'DM Sans', sans-serif;
+  --type-mono:      'JetBrains Mono', monospace;
+  --fs-hero:        clamp(3rem, 8vw, 7rem);
+  --fs-display:     clamp(1.5rem, 3vw, 2.5rem);
+  --fs-heading:     clamp(0.9rem, 1.5vw, 1.1rem);
+  --fs-body:        0.75rem;
+  --fs-caption:     0.6rem;
+  --fs-micro:       0.5rem;
+  --fs-nano:        0.4rem;
+
+  /* ── SPACING ── */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;
+  --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
+  --sp-7: 48px; --sp-8: 64px;
+
+  /* ── ELEVATION ── */
+  --elev-card:  2px 4px 12px rgba(0,0,0,0.5);
+  --elev-float: 4px 8px 24px rgba(0,0,0,0.7);
+  --elev-popup: 0 12px 40px rgba(0,0,0,0.8);
+
+  /* ── BORDERS ── */
+  --border-hard:  2px solid var(--sub-ink);
+  --border-rule:  1px solid rgba(255,255,255,0.06);
+  --border-focus: 1px solid var(--mark-yellow);
+
+  /* ── MOTION ── */
+  --ease-physical: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-snap:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+  --dur-fast:      0.15s;
+  --dur-med:       0.3s;
+  --dur-slow:      0.6s;
+
+  /* ── Z-INDEX SCALE ── */
+  --z-base:      1;
+  --z-card:      10;
+  --z-overlay:   100;
+  --z-modal:     500;
+  --z-toast:     800;
+  --z-strip:     900;
+  --z-cmd:       950;
+}
+
+/* ── GLOBAL ── */
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  background: var(--sub-void);
+  color: var(--sub-archival);
+  font-family: var(--type-mono);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+::selection { background: var(--mark-yellow); color: var(--sub-ink); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sub-slate); }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  CLASSIFICATION STRIP                                       ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.strip {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 34px;
+  background: var(--sub-ink);
+  border-bottom: 2px solid var(--mark-blue);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--sp-4);
+  z-index: var(--z-strip);
+  font-size: var(--fs-micro);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  user-select: none;
+}
+
+.strip-left { display: flex; align-items: center; gap: var(--sp-4); }
+
+.strip-logo {
+  color: var(--mark-orange);
+  display: flex; align-items: center; gap: 6px;
+  cursor: default;
+}
+.strip-logo::before { content: ''; width: 6px; height: 6px; background: var(--mark-orange); }
+
+.strip-nav { display: flex; gap: 0; }
+
+.strip-btn {
+  background: none; border: none; outline: none;
+  color: var(--sub-grey);
+  font: 600 var(--fs-micro)/1 var(--type-mono);
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  transition: color var(--dur-fast), background var(--dur-fast);
+  position: relative;
+}
+.strip-btn:hover { color: var(--sub-archival); }
+.strip-btn.active { color: var(--mark-yellow); background: rgba(229,255,0,0.04); }
+.strip-btn.active::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 2px; background: var(--mark-yellow);
+}
+
+.strip-right { display: flex; align-items: center; gap: var(--sp-4); }
+
+.strip-clock { color: var(--sub-grey); font-variant-numeric: tabular-nums; }
+
+.strip-kbd {
+  color: var(--sub-grey);
+  font-size: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1px 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color var(--dur-fast);
+}
+.strip-kbd:hover { border-color: var(--mark-yellow); color: var(--mark-yellow); }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  VIEW SYSTEM                                                ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.view-root { margin-top: 34px; min-height: calc(100vh - 34px); position: relative; z-index: var(--z-base); }
+.vp { display: none; min-height: calc(100vh - 34px); }
+.vp.active { display: block; }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  VIEW: OPERATIONAL                                          ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.ops {
+  display: grid;
+  grid-template-columns: 300px 1fr 240px;
+  grid-template-rows: 1fr auto;
+  height: calc(100vh - 34px);
+}
+
+/* ── Sidebar ── */
+.sb { background: var(--sub-charcoal); border-right: var(--border-rule); display: flex; flex-direction: column; overflow: hidden; }
+.sb-r { grid-column: 3; grid-row: 1/3; border-right: none; border-left: var(--border-rule); }
+
+.sb-head {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: var(--border-rule);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.sb-head h2 {
+  font: 800 var(--fs-heading)/1.2 var(--type-display);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.sb-badge {
+  font-size: var(--fs-micro);
+  background: var(--mark-yellow); color: var(--sub-ink);
+  padding: 1px 6px; font-weight: 700;
+}
+
+.sb-scroll { flex: 1; overflow-y: auto; padding: var(--sp-2); display: flex; flex-direction: column; gap: 2px; }
+
+/* ── Intel Cards ── */
+.ic {
+  background: var(--sub-graphite);
+  padding: var(--sp-2) var(--sp-3);
+  border-left: 3px solid var(--sub-terrain);
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  position: relative;
+}
+.ic:hover { background: rgba(255,255,255,0.03); border-left-color: var(--mark-blue-lt); transform: translateX(2px); }
+.ic.p-high { border-left-color: var(--mark-orange); }
+.ic.p-crit { border-left-color: var(--mark-red); }
+.ic.selected { border-left-color: var(--mark-yellow); background: rgba(229,255,0,0.03); }
+
+.ic-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+.ic-type { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sub-grey); }
+.ic-time { font-size: 8px; color: var(--sub-grey); font-variant-numeric: tabular-nums; }
+.ic-title { font: 600 var(--fs-caption)/1.3 var(--type-display); color: var(--sub-archival); }
+.ic-coord { font-size: 8px; color: var(--mark-blue-lt); margin-top: 2px; }
+
+/* ── Main Canvas Area ── */
+.main { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+/* Toolbar */
+.tb {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--sub-charcoal);
+  border-bottom: var(--border-rule);
+  flex-shrink: 0;
+  gap: var(--sp-2);
+}
+
+.tb-group { display: flex; gap: 2px; align-items: center; }
+
+.tb-btn {
+  background: var(--sub-graphite); border: 1px solid rgba(255,255,255,0.05);
+  color: var(--sub-grey);
+  font: 600 8px/1 var(--type-mono);
+  padding: 4px 8px; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: all var(--dur-fast);
+  outline: none;
+}
+.tb-btn:hover { color: var(--sub-archival); border-color: rgba(255,255,255,0.12); }
+.tb-btn.on { color: var(--mark-yellow); border-color: var(--mark-yellow); background: rgba(229,255,0,0.06); }
+
+.tb-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.06); margin: 0 2px; }
+
+.tb-label { font-size: 8px; color: var(--sub-grey); letter-spacing: 1px; text-transform: uppercase; }
+
+/* Canvas */
+.canvas-wrap { flex: 1; position: relative; overflow: hidden; }
+
+.tac {
+  position: absolute; inset: 0;
+  background: var(--sub-terrain);
+  cursor: crosshair;
+}
+
+/* Terrain noise */
+.tac::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1;
+}
+
+/* Grid */
+.tac::after {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 10% 10%;
+  pointer-events: none; z-index: 2;
+}
+
+/* Heatmap canvas overlay */
+.heatmap-canvas {
+  position: absolute; inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-med);
+  mix-blend-mode: screen;
+}
+.heatmap-canvas.visible { opacity: 0.85; }
+
+/* Scatter nodes */
+.dn {
+  position: absolute; border-radius: 50%;
+  transform: translate(-50%,-50%) scale(1);
+  transition: transform var(--dur-fast) var(--ease-physical);
+  z-index: 5; pointer-events: all;
+}
+.dn.hide { transform: translate(-50%,-50%) scale(0); pointer-events: none; }
+
+/* Geo circles */
+.gc {
+  position: absolute; border-radius: 50%;
+  border: 1.5px solid; background: transparent;
+  transform: translate(-50%,-50%);
+  pointer-events: none; z-index: 6;
+  opacity: 0;
+  animation: gc-in var(--dur-slow) var(--ease-physical) forwards;
+}
+@keyframes gc-in {
+  from { opacity: 0; transform: translate(-50%,-50%) scale(0.2); }
+  to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+}
+.gc.c-or { border-color: var(--mark-orange); box-shadow: 0 0 10px rgba(255,102,0,0.2); }
+.gc.c-pk { border-color: var(--mark-pink); box-shadow: 0 0 10px rgba(255,0,127,0.2); }
+.gc.c-bl { border-color: var(--mark-blue); box-shadow: 0 0 10px rgba(0,85,212,0.2); }
+.gc.c-yl { border-color: var(--mark-yellow); background: rgba(229,255,0,0.04); }
+.gc.c-cy { border-color: var(--mark-cyan); box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+
+/* Annotation line (SVG overlay) */
+.annotation-svg {
+  position: absolute; inset: 0;
+  z-index: 7; pointer-events: none;
+}
+.annotation-svg.drawing { pointer-events: all; cursor: crosshair; }
+.anno-line { stroke-width: 2; fill: none; stroke-dasharray: 6 3; }
+.anno-marker { fill: var(--mark-cyan); }
+.anno-label {
+  font: 600 9px var(--type-mono);
+  fill: var(--mark-cyan);
+}
+
+/* Measurement overlay */
+.measure-line { stroke: var(--mark-cyan); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.measure-label {
+  font: 700 10px var(--type-mono);
+  fill: var(--sub-ink);
+  paint-order: stroke;
+  stroke: var(--mark-cyan);
+  stroke-width: 3px;
+}
+
+/* Crosshair */
+.ch-h, .ch-v { position: absolute; background: rgba(229,255,0,0.1); pointer-events: none; z-index: 50; display: none; }
+.ch-h { height: 1px; left: 0; right: 0; }
+.ch-v { width: 1px; top: 0; bottom: 0; }
+
+/* Coord HUD */
+.coord-hud {
+  position: absolute; top: var(--sp-2); right: var(--sp-3);
+  text-align: right; font-size: 9px; color: var(--mark-yellow);
+  z-index: var(--z-overlay); line-height: 1.5;
+  text-shadow: 0 0 6px rgba(229,255,0,0.2);
+  font-weight: 500; pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Canvas stamp */
+.canvas-stamp {
+  position: absolute; bottom: var(--sp-2); left: var(--sp-3);
+  font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; z-index: var(--z-overlay);
+  background: rgba(93,104,92,0.8); color: var(--sub-ink);
+  padding: 2px 6px; pointer-events: none;
+}
+
+/* Mini-map */
+.minimap {
+  position: absolute; bottom: var(--sp-5); right: var(--sp-3);
+  width: 120px; height: 90px;
+  background: var(--sub-ink); border: 1px solid rgba(255,255,255,0.1);
+  z-index: var(--z-overlay);
+  overflow: hidden; pointer-events: none;
+  box-shadow: var(--elev-card);
+}
+.minimap canvas { width: 100%; height: 100%; }
+
+/* Tooltip flare */
+.flare {
+  position: absolute; background: var(--sub-ink); color: var(--mark-yellow);
+  font-size: 9px; padding: 4px 8px; border: 1px solid var(--mark-yellow);
+  pointer-events: none; z-index: 200; display: none;
+  white-space: nowrap; letter-spacing: 0.5px; font-weight: 500;
+  box-shadow: 0 0 16px rgba(229,255,0,0.12);
+}
+
+/* Scale bar */
+.scale-bar {
+  position: absolute; bottom: var(--sp-2); right: 140px;
+  display: flex; align-items: flex-end; gap: var(--sp-1);
+  z-index: var(--z-overlay); pointer-events: none;
+}
+.scale-line { width: 50px; height: 1px; background: var(--sub-ink); position: relative; }
+.scale-line::before, .scale-line::after { content:''; position: absolute; width:1px; height:4px; background: var(--sub-ink); bottom:0; }
+.scale-line::before { left:0; } .scale-line::after { right:0; }
+.scale-lbl { font-size: 8px; color: var(--sub-ink); font-weight: 700; }
+
+/* Layer legend bar */
+.legend-bar {
+  display: flex; gap: 0; flex-shrink: 0;
+  border-top: var(--border-rule); background: var(--sub-charcoal);
+}
+
+.lg-btn {
+  flex: 1; padding: 5px var(--sp-2);
+  font: 700 8px/1 var(--type-mono);
+  text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 5px; border: none; outline: none;
+  transition: filter var(--dur-fast), transform var(--dur-fast);
+}
+.lg-btn .ld { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.lg-btn.off { filter: grayscale(0.9) opacity(0.25); transform: translateY(2px); }
+
+.lg-infra { background: var(--sub-ink); color: var(--sub-archival); }
+.lg-infra .ld { background: var(--sub-archival); }
+.lg-path { background: var(--mark-orange); color: var(--sub-ink); }
+.lg-path .ld { background: var(--sub-ink); }
+.lg-org { background: var(--mark-pink); color: var(--sub-ink); }
+.lg-org .ld { background: var(--sub-ink); }
+.lg-zone { background: var(--mark-yellow); color: var(--sub-ink); }
+.lg-zone .ld { background: var(--sub-ink); }
+
+/* ── Temporal Scrubber ── */
+.scrubber {
+  grid-column: 1 / -1; grid-row: 2;
+  background: var(--sub-ink);
+  border-top: 2px solid var(--mark-blue);
+  padding: var(--sp-2) var(--sp-4);
+  display: flex; align-items: center; gap: var(--sp-4);
+}
+
+.scrub-play {
+  background: var(--sub-graphite); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--sub-archival); width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 10px; transition: all var(--dur-fast);
+  flex-shrink: 0;
+}
+.scrub-play:hover { border-color: var(--mark-yellow); color: var(--mark-yellow); }
+.scrub-play.playing { border-color: var(--mark-green); color: var(--mark-green); }
+
+.scrub-track-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+.scrub-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--sub-grey); font-variant-numeric: tabular-nums; }
+
+.scrub-track {
+  height: 24px; background: var(--sub-charcoal); position: relative; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Event markers on timeline */
+.scrub-mark {
+  position: absolute; top: 0; bottom: 0; width: 2px;
+  transform: translateX(-50%);
+}
+
+.scrub-head {
+  position: absolute; top: -2px; bottom: -2px; width: 3px;
+  background: var(--mark-yellow);
+  box-shadow: 0 0 8px rgba(229,255,0,0.4);
+  transform: translateX(-50%);
+  z-index: 10;
+  cursor: ew-resize;
+}
+
+/* Sparkline mini-bars inside scrubber */
+.scrub-bars {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; gap: 0;
+}
+.scrub-bar {
+  flex: 1; background: rgba(255,255,255,0.04);
+  transition: height 0.3s var(--ease-physical);
+}
+
+.scrub-stats {
+  display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; text-align: right;
+}
+.scrub-stat-val { font: 600 14px/1 var(--type-display); color: var(--mark-yellow); font-variant-numeric: tabular-nums; }
+.scrub-stat-lbl { font-size: 7px; color: var(--sub-grey); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── Right Sidebar Panels ── */
+.pn { padding: var(--sp-3) var(--sp-4); border-bottom: var(--border-rule); }
+.pn-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-2); }
+.pn-head h3 { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--sub-grey); }
+
+.rfc-tag { font-size: 7px; background: var(--sub-ink); color: var(--mark-orange); padding: 1px 4px; font-weight: 700; letter-spacing: 0.5px; }
+
+.sr { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+.sr-l { font-size: 8px; color: var(--sub-grey); text-transform: uppercase; letter-spacing: 1px; }
+.sr-v { font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sr-v.yl { color: var(--mark-yellow); }
+.sr-v.bl { color: var(--mark-blue-lt); }
+.sr-v.or { color: var(--mark-orange); }
+.sr-v.pk { color: var(--mark-pink); }
+.sr-v.gn { color: var(--mark-green); }
+
+/* Density bars */
+.db-group { display: flex; flex-direction: column; gap: var(--sp-1); }
+.db-row { display: flex; align-items: center; gap: var(--sp-2); }
+.db-lbl { width: 40px; font-size: 7px; text-transform: uppercase; letter-spacing: 1px; color: var(--sub-grey); text-align: right; flex-shrink: 0; }
+.db-track { flex: 1; height: 3px; background: rgba(255,255,255,0.03); overflow: hidden; }
+.db-fill { height: 100%; transition: width 0.8s var(--ease-physical); }
+.db-fill.f-i { background: var(--sub-archival); }
+.db-fill.f-p { background: var(--mark-orange); }
+.db-fill.f-o { background: var(--mark-pink); }
+.db-fill.f-z { background: var(--mark-yellow); }
+.db-val { font-size: 8px; width: 28px; font-variant-numeric: tabular-nums; color: var(--sub-grey); }
+
+/* Sparkline */
+.sparkline {
+  display: flex; align-items: flex-end; gap: 1px; height: 30px;
+}
+.spark-bar {
+  flex: 1; background: var(--mark-blue-lt);
+  min-height: 1px;
+  transition: height 0.3s var(--ease-physical);
+  opacity: 0.6;
+}
+.spark-bar:hover { opacity: 1; }
+
+/* Radial gauge */
+.gauge-row { display: flex; gap: var(--sp-3); justify-content: center; }
+.gauge {
+  width: 55px; height: 55px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.gauge svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.gauge-bg { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 3; }
+.gauge-fill { fill: none; stroke-width: 3; stroke-linecap: butt; transition: stroke-dashoffset 1s var(--ease-physical); }
+.gauge-label { font-size: 8px; font-weight: 700; text-align: center; line-height: 1.1; }
+.gauge-pct { font-size: 11px; display: block; }
+
+/* GeoJSON block */
+.gj-block {
+  font-size: 8px; line-height: 1.5; color: var(--sub-grey);
+  max-height: 140px; overflow-y: auto; white-space: pre;
+  background: rgba(0,0,0,0.15); padding: var(--sp-2);
+}
+.gj-block .jk { color: var(--mark-blue-lt); }
+.gj-block .js { color: var(--sub-kraft); }
+.gj-block .jn { color: var(--mark-orange); }
+
+/* ── Feature Detail Panel (overlay) ── */
+.detail-panel {
+  position: absolute; top: var(--sp-5); left: var(--sp-5);
+  width: 260px; background: var(--sub-ink);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--elev-popup);
+  z-index: var(--z-overlay);
+  display: none;
+  font-size: var(--fs-caption);
+}
+.detail-panel.open { display: block; }
+
+.dp-head {
+  padding: var(--sp-3);
+  border-bottom: var(--border-rule);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.dp-head h4 { font: 700 var(--fs-body)/1 var(--type-display); text-transform: uppercase; }
+.dp-close {
+  background: none; border: none; color: var(--sub-grey);
+  cursor: pointer; font-size: 14px; line-height: 1;
+  transition: color var(--dur-fast);
+}
+.dp-close:hover { color: var(--mark-red); }
+
+.dp-body { padding: var(--sp-3); }
+.dp-row { display: flex; justify-content: space-between; padding: 2px 0; }
+.dp-row-k { color: var(--sub-grey); text-transform: uppercase; letter-spacing: 1px; font-size: 8px; }
+.dp-row-v { font-weight: 600; font-variant-numeric: tabular-nums; }
+.dp-row-v.c-bl { color: var(--mark-blue-lt); }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  VIEW: TOKENS                                               ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.tok-view { padding: var(--sp-7) var(--sp-8); max-width: 1200px; margin: 0 auto; }
+
+.tok-hero { margin-bottom: var(--sp-8); }
+.tok-hero h1 {
+  font: 900 var(--fs-hero)/0.85 var(--type-display);
+  letter-spacing: -3px; text-transform: uppercase;
+}
+.tok-hero h1 span { color: var(--mark-yellow); }
+.tok-hero p { margin-top: var(--sp-4); font-size: var(--fs-body); color: var(--sub-grey); max-width: 520px; line-height: 1.7; }
+
+.tok-sect { margin-bottom: var(--sp-8); }
+.tok-sect-head {
+  display: flex; align-items: baseline; gap: var(--sp-4);
+  margin-bottom: var(--sp-5); border-bottom: 2px solid var(--sub-graphite); padding-bottom: var(--sp-3);
+}
+.tok-num { font: 300 2.5rem/1 var(--type-display); color: var(--sub-terrain); }
+.tok-title { font-size: var(--fs-heading); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+/* Swatch grid */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--sp-2); }
+.sw { display: flex; flex-direction: column; }
+.sw-color { height: 48px; position: relative; }
+.sw-color::after { content: attr(data-hex); position: absolute; bottom: 2px; right: 4px; font-size: 7px; font-weight: 700; opacity: 0.7; }
+.sw-color.lt::after { color: var(--sub-archival); }
+.sw-color.dk::after { color: var(--sub-ink); }
+.sw-info { padding: var(--sp-1) var(--sp-2); background: var(--sub-graphite); }
+.sw-name { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--sub-grey); }
+.sw-var { font-size: 7px; color: var(--mark-blue-lt); }
+
+/* Type specimens */
+.type-spec { margin-bottom: var(--sp-4); padding: var(--sp-4); background: var(--sub-charcoal); }
+.type-spec-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--sub-grey); margin-bottom: var(--sp-3); display: flex; justify-content: space-between; }
+.ts-hero { font: 900 var(--fs-hero)/0.85 var(--type-display); text-transform: uppercase; letter-spacing: -3px; }
+.ts-display { font: 800 var(--fs-display)/1.1 var(--type-display); text-transform: uppercase; letter-spacing: -0.5px; }
+.ts-mono { font: 400 var(--fs-body)/1.7 var(--type-mono); color: var(--sub-bone); }
+
+/* Component demos */
+.comp-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+
+/* Badges */
+.badge { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 7px; display: inline-flex; align-items: center; gap: 3px; }
+.b-crit { background: var(--mark-red); color: var(--sub-archival); }
+.b-warn { background: var(--mark-orange); color: var(--sub-ink); }
+.b-nom  { background: var(--mark-green); color: var(--sub-ink); }
+.b-info { background: var(--mark-blue-lt); color: var(--sub-ink); }
+.b-inert { background: var(--sub-grey); color: var(--sub-ink); }
+.b-act  { background: var(--mark-yellow); color: var(--sub-ink); }
+.b-pink { background: var(--mark-pink); color: var(--sub-ink); }
+.b-cyan { background: var(--mark-cyan); color: var(--sub-ink); }
+.b-viol { background: var(--mark-violet); color: var(--sub-archival); }
+
+/* Alerts */
+.alert-demo {
+  padding: var(--sp-2) var(--sp-3); border-left: 3px solid;
+  background: var(--sub-graphite); font-size: var(--fs-caption);
+  display: flex; align-items: center; gap: var(--sp-2); flex: 1; min-width: 180px;
+}
+.alert-demo .a-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.a-crit { border-color: var(--mark-red); } .a-crit .a-dot { background: var(--mark-red); }
+.a-warn { border-color: var(--mark-orange); } .a-warn .a-dot { background: var(--mark-orange); }
+.a-nom  { border-color: var(--mark-green); } .a-nom .a-dot { background: var(--mark-green); }
+.a-inf  { border-color: var(--mark-blue-lt); } .a-inf .a-dot { background: var(--mark-blue-lt); }
+
+/* Card demos */
+.cd {
+  background: var(--sub-graphite); padding: var(--sp-3);
+  border-left: 3px solid var(--sub-terrain); min-width: 160px; flex: 1;
+  transition: border-color var(--dur-fast), transform var(--dur-fast);
+}
+.cd:hover { border-color: var(--mark-blue-lt); transform: translateX(2px); }
+.cd-head { font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sub-grey); }
+.cd-val { font: 700 1.5rem/1 var(--type-display); margin-top: var(--sp-1); }
+.cd-foot { font-size: 8px; color: var(--sub-grey); margin-top: var(--sp-1); }
+
+/* Data table */
+.dtable { width: 100%; border-collapse: collapse; font-size: var(--fs-caption); }
+.dtable th {
+  text-align: left; font-size: 8px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px; color: var(--sub-grey);
+  padding: var(--sp-1) var(--sp-2); border-bottom: 2px solid var(--sub-graphite);
+}
+.dtable td { padding: var(--sp-1) var(--sp-2); border-bottom: 1px solid rgba(255,255,255,0.02); font-variant-numeric: tabular-nums; }
+.dtable tr:hover td { background: rgba(255,255,255,0.02); }
+.td-c { color: var(--mark-blue-lt); }
+.td-k { text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+/* Form inputs */
+.form-row { display: flex; gap: var(--sp-3); margin-bottom: var(--sp-3); flex-wrap: wrap; }
+.form-field { flex: 1; min-width: 140px; }
+.form-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sub-grey); margin-bottom: 3px; display: block; }
+.form-input {
+  width: 100%; background: var(--sub-graphite); border: 1px solid rgba(255,255,255,0.06);
+  color: var(--sub-archival); font: 400 var(--fs-body)/1.5 var(--type-mono);
+  padding: var(--sp-2) var(--sp-3); outline: none;
+  transition: border-color var(--dur-fast);
+}
+.form-input:focus { border-color: var(--mark-yellow); }
+.form-input::placeholder { color: var(--sub-grey); }
+
+.form-select {
+  width: 100%; background: var(--sub-graphite); border: 1px solid rgba(255,255,255,0.06);
+  color: var(--sub-archival); font: 400 var(--fs-body)/1.5 var(--type-mono);
+  padding: var(--sp-2) var(--sp-3); outline: none; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8D8C'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+.form-select:focus { border-color: var(--mark-yellow); }
+
+/* Heatmap ramp display */
+.ramp { display: flex; height: 24px; }
+.ramp-seg { flex: 1; position: relative; }
+.ramp-seg::after { content: attr(data-label); position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); font-size: 7px; color: var(--sub-grey); white-space: nowrap; }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  COMMAND PALETTE                                            ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.cmd-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-cmd);
+  display: none; align-items: flex-start; justify-content: center;
+  padding-top: 15vh;
+}
+.cmd-overlay.open { display: flex; }
+
+.cmd-box {
+  width: 500px; max-width: 90vw;
+  background: var(--sub-charcoal);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--elev-popup);
+  overflow: hidden;
+}
+
+.cmd-input-wrap {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: var(--border-rule);
+}
+
+.cmd-chevron { color: var(--mark-yellow); font-weight: 700; font-size: 12px; }
+
+.cmd-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--sub-archival);
+  font: 400 var(--fs-body)/1.5 var(--type-mono);
+}
+.cmd-input::placeholder { color: var(--sub-grey); }
+
+.cmd-list { max-height: 300px; overflow-y: auto; }
+
+.cmd-item {
+  padding: var(--sp-2) var(--sp-4);
+  display: flex; align-items: center; gap: var(--sp-3);
+  cursor: pointer;
+  transition: background var(--dur-fast);
+}
+.cmd-item:hover, .cmd-item.active { background: rgba(229,255,0,0.04); }
+
+.cmd-item-icon {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sub-graphite);
+  font-size: 10px; color: var(--sub-grey); flex-shrink: 0;
+}
+
+.cmd-item-text { font-size: var(--fs-caption); }
+.cmd-item-text span { display: block; font-size: 8px; color: var(--sub-grey); margin-top: 1px; }
+
+.cmd-item-kbd { margin-left: auto; font-size: 8px; color: var(--sub-grey); }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  TOAST NOTIFICATION SYSTEM                                  ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.toast-container {
+  position: fixed; bottom: var(--sp-5); right: var(--sp-5);
+  z-index: var(--z-toast);
+  display: flex; flex-direction: column-reverse; gap: var(--sp-2);
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--sub-ink);
+  border-left: 3px solid var(--sub-grey);
+  padding: var(--sp-3) var(--sp-4);
+  box-shadow: var(--elev-float);
+  min-width: 260px; max-width: 360px;
+  pointer-events: all;
+  animation: toast-in 0.3s var(--ease-snap) forwards;
+  display: flex; align-items: center; gap: var(--sp-3);
+}
+
+.toast.removing { animation: toast-out 0.2s var(--ease-physical) forwards; }
+
+.toast.t-crit { border-left-color: var(--mark-red); }
+.toast.t-warn { border-left-color: var(--mark-orange); }
+.toast.t-nom  { border-left-color: var(--mark-green); }
+.toast.t-info { border-left-color: var(--mark-blue-lt); }
+
+.toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.t-crit .toast-dot { background: var(--mark-red); }
+.t-warn .toast-dot { background: var(--mark-orange); }
+.t-nom .toast-dot  { background: var(--mark-green); }
+.t-info .toast-dot { background: var(--mark-blue-lt); }
+
+.toast-msg { font-size: var(--fs-caption); line-height: 1.4; }
+.toast-msg strong { font-weight: 700; display: block; font-size: var(--fs-body); margin-bottom: 1px; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  DRAG-DROP GEOJSON IMPORT OVERLAY                           ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+.drop-zone {
+  position: fixed; inset: 0;
+  background: rgba(0,85,212,0.15);
+  border: 3px dashed var(--mark-blue-lt);
+  z-index: var(--z-modal);
+  display: none;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.drop-zone.active { display: flex; }
+
+.drop-label {
+  font: 800 var(--fs-display)/1 var(--type-display);
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--mark-blue-lt);
+  text-align: center;
+}
+.drop-label span { display: block; font: 400 var(--fs-body)/1.5 var(--type-mono); margin-top: var(--sp-3); color: var(--sub-archival); letter-spacing: 0; }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  RESPONSIVE                                                 ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+@media (max-width: 1100px) {
+  .ops { grid-template-columns: 1fr; }
+  .sb, .sb-r { display: none; }
+  .main { grid-column: 1; }
+  .scrubber { grid-column: 1; }
+  .tok-view { padding: var(--sp-5); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ CLASSIFICATION STRIP ═══ -->
+<div class="strip">
+  <div class="strip-left">
+    <span class="strip-logo">DOSSIER VOL</span>
+    <nav class="strip-nav">
+      <button class="strip-btn active" data-v="ops">(1) Ops</button>
+      <button class="strip-btn" data-v="tokens">(2) Tokens</button>
+    </nav>
+  </div>
+  <div class="strip-right">
+    <span class="strip-kbd" id="cmd-trigger" title="Cmd+K">⌘K</span>
+    <span class="strip-clock" id="clock">--</span>
+  </div>
+</div>
+
+<!-- ═══ VIEWS ═══ -->
+<div class="view-root">
+
+<!-- ═══════════════════════════════════════════
+     VIEW: OPERATIONAL
+     ═══════════════════════════════════════════ -->
+<div class="vp active" id="v-ops">
+<div class="ops">
+
+  <!-- Left Sidebar: Intel Feed -->
+  <div class="sb" id="sb-left">
+    <div class="sb-head">
+      <h2>Intel Feed</h2>
+      <span class="sb-badge" id="feed-ct">0</span>
+    </div>
+    <div class="sb-scroll" id="feed"></div>
+  </div>
+
+  <!-- Main Canvas -->
+  <div class="main">
+    <div class="tb">
+      <div class="tb-group">
+        <button class="tb-btn on" data-tool="pointer" title="Select">PTR</button>
+        <button class="tb-btn" data-tool="measure" title="Measure distance">RUL</button>
+        <button class="tb-btn" data-tool="annotate" title="Draw annotation">ANN</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn on" id="tb-scatter">SCAT</button>
+        <button class="tb-btn" id="tb-heat">HEAT</button>
+        <button class="tb-btn on" id="tb-circles">CIRC</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" id="tb-export" title="Export GeoJSON">EXP</button>
+      </div>
+      <span class="tb-label">RFC 7946 • WGS 84</span>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="tac" id="tac">
+        <canvas class="heatmap-canvas" id="heatmap"></canvas>
+        <svg class="annotation-svg" id="anno-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="coord-hud" id="hud">LAT ---.------<br>LNG ---.------</div>
+        <div class="ch-h" id="chH"></div>
+        <div class="ch-v" id="chV"></div>
+        <div class="flare" id="flare"></div>
+        <div class="canvas-stamp">GEOINT • DOSSIER VOL v3</div>
+        <div class="scale-bar"><div class="scale-line"></div><span class="scale-lbl">~1km</span></div>
+        <div class="minimap"><canvas id="mm-canvas"></canvas></div>
+
+        <!-- Feature Detail Panel -->
+        <div class="detail-panel" id="detail">
+          <div class="dp-head">
+            <h4 id="dp-title">FEATURE</h4>
+            <button class="dp-close" id="dp-close">×</button>
+          </div>
+          <div class="dp-body" id="dp-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend-bar" id="legend">
+      <button class="lg-btn lg-infra" data-cat="infrastructure"><span class="ld"></span>Base</button>
+      <button class="lg-btn lg-path" data-cat="pathway"><span class="ld"></span>Path</button>
+      <button class="lg-btn lg-org" data-cat="organic"><span class="ld"></span>Organic</button>
+      <button class="lg-btn lg-zone" data-cat="zone"><span class="ld"></span>Zone</button>
+    </div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="sb sb-r" id="sb-right">
+    <div class="pn">
+      <div class="pn-head"><h3>Properties</h3><span class="rfc-tag">RFC 7946</span></div>
+      <div class="sr"><span class="sr-l">Type</span><span class="sr-v">FeatureCollection</span></div>
+      <div class="sr"><span class="sr-l">CRS</span><span class="sr-v bl">WGS 84</span></div>
+      <div class="sr"><span class="sr-l">Features</span><span class="sr-v yl" id="p-feat">0</span></div>
+      <div class="sr"><span class="sr-l">Circles</span><span class="sr-v or" id="p-circ">5</span></div>
+    </div>
+    <div class="pn">
+      <div class="pn-head"><h3>Density</h3></div>
+      <div class="db-group">
+        <div class="db-row"><span class="db-lbl">Base</span><div class="db-track"><div class="db-fill f-i" id="dbi"></div></div><span class="db-val" id="dbi-v">0</span></div>
+        <div class="db-row"><span class="db-lbl">Path</span><div class="db-track"><div class="db-fill f-p" id="dbp"></div></div><span class="db-val" id="dbp-v">0</span></div>
+        <div class="db-row"><span class="db-lbl">Organic</span><div class="db-track"><div class="db-fill f-o" id="dbo"></div></div><span class="db-val" id="dbo-v">0</span></div>
+        <div class="db-row"><span class="db-lbl">Zone</span><div class="db-track"><div class="db-fill f-z" id="dbz"></div></div><span class="db-val" id="dbz-v">0</span></div>
+      </div>
+    </div>
+    <div class="pn">
+      <div class="pn-head"><h3>Activity</h3></div>
+      <div class="sparkline" id="spark"></div>
+    </div>
+    <div class="pn">
+      <div class="pn-head"><h3>Coverage</h3></div>
+      <div class="gauge-row" id="gauges"></div>
+    </div>
+    <div class="pn" style="flex:1;">
+      <div class="pn-head"><h3>GeoJSON</h3></div>
+      <div class="gj-block" id="gj-out"></div>
+    </div>
+  </div>
+
+  <!-- Temporal Scrubber -->
+  <div class="scrubber">
+    <div class="scrub-play" id="scrub-play">▶</div>
+    <div class="scrub-track-wrap">
+      <div class="scrub-labels"><span id="scrub-start">00:00</span><span id="scrub-end">23:59</span></div>
+      <div class="scrub-track" id="scrub-track">
+        <div class="scrub-bars" id="scrub-bars"></div>
+        <div class="scrub-head" id="scrub-head" style="left:0%"></div>
+      </div>
+    </div>
+    <div class="scrub-stats">
+      <span class="scrub-stat-val" id="scrub-time">00:00</span>
+      <span class="scrub-stat-lbl">Current</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VIEW: TOKENS
+     ═══════════════════════════════════════════ -->
+<div class="vp" id="v-tokens">
+<div class="tok-view">
+
+  <div class="tok-hero">
+    <h1>Visual<br>Operating<br><span>Language</span></h1>
+    <p>Complete design token system and component grammar for intelligence-style geospatial products. Every element descends from the physical dossier: raw substrate, tactical illumination, mechanical precision.</p>
+  </div>
+
+  <!-- (1) PALETTE -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(1)</span><span class="tok-title">Substrate Palette</span></div>
+    <div class="sw-grid" id="sw-sub"></div>
+  </div>
+
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(1.1)</span><span class="tok-title">Tactical Markers</span></div>
+    <div class="sw-grid" id="sw-mark"></div>
+  </div>
+
+  <!-- (1.2) HEATMAP RAMP -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(1.2)</span><span class="tok-title">Heatmap Ramp</span></div>
+    <div class="ramp" id="ramp"></div>
+    <div style="height:20px;"></div>
+  </div>
+
+  <!-- (2) TYPOGRAPHY -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(2)</span><span class="tok-title">Typography</span></div>
+    <div class="type-spec">
+      <div class="type-spec-label"><span>Display — DM Sans</span><span>--type-display</span></div>
+      <div class="ts-hero">GEOINT</div>
+      <div class="ts-display" style="margin-top:var(--sp-3)">Feature Collection — Point Geometry</div>
+    </div>
+    <div class="type-spec">
+      <div class="type-spec-label"><span>Data — JetBrains Mono</span><span>--type-mono</span></div>
+      <div class="ts-mono">{ "type": "FeatureCollection",<br>&nbsp;&nbsp;"features": [{ "geometry": { "type": "Point",<br>&nbsp;&nbsp;&nbsp;&nbsp;"coordinates": [-73.955, 40.735] }}]}<br><br>LAT: 40.735291 | LNG: -73.955108 | ALT: 0m<br>TIMESTAMP: 2026-03-22T14:30:00Z</div>
+    </div>
+  </div>
+
+  <!-- (3) BADGES -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(3)</span><span class="tok-title">Status Badges</span></div>
+    <div class="comp-row">
+      <span class="badge b-crit">Critical</span>
+      <span class="badge b-warn">Warning</span>
+      <span class="badge b-nom">Nominal</span>
+      <span class="badge b-info">Info</span>
+      <span class="badge b-act">Active</span>
+      <span class="badge b-pink">Track</span>
+      <span class="badge b-cyan">Measure</span>
+      <span class="badge b-viol">Annotate</span>
+      <span class="badge b-inert">Inert</span>
+    </div>
+  </div>
+
+  <!-- (4) ALERTS -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(4)</span><span class="tok-title">Alert Components</span></div>
+    <div class="comp-row">
+      <div class="alert-demo a-crit"><span class="a-dot"></span>SIGINT intercept — priority escalation</div>
+      <div class="alert-demo a-warn"><span class="a-dot"></span>Coverage gap in sector 7-G</div>
+    </div>
+    <div class="comp-row">
+      <div class="alert-demo a-nom"><span class="a-dot"></span>All feeds nominal — 515 features active</div>
+      <div class="alert-demo a-inf"><span class="a-dot"></span>New GeoJSON payload received</div>
+    </div>
+  </div>
+
+  <!-- (5) CARDS -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(5)</span><span class="tok-title">Intel Cards</span></div>
+    <div class="comp-row">
+      <div class="cd"><div class="cd-head">Total Features</div><div class="cd-val" style="color:var(--mark-yellow)">515</div><div class="cd-foot">FeatureCollection • WGS 84</div></div>
+      <div class="cd" style="border-left-color:var(--mark-orange)"><div class="cd-head">Circles</div><div class="cd-val">5</div><div class="cd-foot">Palantir Circle Protocol</div></div>
+      <div class="cd" style="border-left-color:var(--mark-pink)"><div class="cd-head">Density Peak</div><div class="cd-val" style="color:var(--mark-pink)">240</div><div class="cd-foot">Organic cluster — Sector 3</div></div>
+    </div>
+  </div>
+
+  <!-- (6) FORM INPUTS -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(6)</span><span class="tok-title">Form Inputs</span></div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Latitude</label><input class="form-input" type="text" placeholder="40.735291"></div>
+      <div class="form-field"><label class="form-label">Longitude</label><input class="form-input" type="text" placeholder="-73.955108"></div>
+      <div class="form-field"><label class="form-label">Category</label>
+        <select class="form-select"><option>Infrastructure</option><option>Pathway</option><option>Organic</option><option>Zone</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Radius (km)</label><input class="form-input" type="text" placeholder="1.5"></div>
+      <div class="form-field"><label class="form-label">Label</label><input class="form-input" type="text" placeholder="Annotation label"></div>
+    </div>
+  </div>
+
+  <!-- (7) TABLE -->
+  <div class="tok-sect">
+    <div class="tok-sect-head"><span class="tok-num">(7)</span><span class="tok-title">Data Table</span></div>
+    <table class="dtable">
+      <thead><tr><th>ID</th><th>Cat</th><th>Lat</th><th>Lng</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>001</td><td class="td-k">Infra</td><td class="td-c">40.755291</td><td class="td-c">-73.980108</td><td><span class="badge b-nom">Live</span></td></tr>
+        <tr><td>002</td><td class="td-k">Path</td><td class="td-c">40.740113</td><td class="td-c">-73.965440</td><td><span class="badge b-warn">Stale</span></td></tr>
+        <tr><td>003</td><td class="td-k">Organic</td><td class="td-c">40.735000</td><td class="td-c">-73.955200</td><td><span class="badge b-nom">Live</span></td></tr>
+        <tr><td>004</td><td class="td-k">Zone</td><td class="td-c">40.750400</td><td class="td-c">-73.950100</td><td><span class="badge b-crit">Alert</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+</div><!-- /view-root -->
+
+<!-- ═══ COMMAND PALETTE ═══ -->
+<div class="cmd-overlay" id="cmd">
+  <div class="cmd-box">
+    <div class="cmd-input-wrap">
+      <span class="cmd-chevron">›</span>
+      <input class="cmd-input" id="cmd-input" placeholder="Type a command..." autocomplete="off">
+    </div>
+    <div class="cmd-list" id="cmd-list"></div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- ═══ DROP ZONE ═══ -->
+<div class="drop-zone" id="dropzone">
+  <div class="drop-label">Drop GeoJSON<span>Import FeatureCollection from .geojson or .json file</span></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ENGINE
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── CLOCK ── */
+const clockEl = document.getElementById('clock');
+function tick(){ clockEl.textContent = new Date().toISOString().replace('T',' ').slice(0,19)+'Z'; }
+setInterval(tick, 1000); tick();
+
+/* ── VIEW NAV ── */
+document.querySelectorAll('.strip-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.strip-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.vp').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('v-'+b.dataset.v).classList.add('active');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   GEOJSON PROJECTION ENGINE
+   ══════════════════════════════════════════════════════════════ */
+
+const BB = { mnLn:-73.995, mxLn:-73.930, mnLt:40.710, mxLt:40.780 };
+
+function proj(lng,lat){
+  return {
+    x: Math.max(1,Math.min(99,((lng-BB.mnLn)/(BB.mxLn-BB.mnLn))*100)),
+    y: Math.max(1,Math.min(99,(1-(lat-BB.mnLt)/(BB.mxLt-BB.mnLt))*100))
+  };
+}
+
+function unproj(xP,yP){
+  return {
+    lng: BB.mnLn + (xP/100)*(BB.mxLn-BB.mnLn),
+    lat: BB.mnLt + (1-yP/100)*(BB.mxLt-BB.mnLt)
+  };
+}
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function toGeoJSON(feats){
+  return {
+    type:"FeatureCollection",
+    features: feats.slice(0,12).map((f,i)=>({
+      type:"Feature", id:i,
+      geometry:{type:"Point",coordinates:[+f.lng.toFixed(6),+f.lat.toFixed(6)]},
+      properties:{category:f.type}
+    }))
+  };
+}
+
+/* ── CLUSTER GEN ── */
+function genCluster(type,cLn,cLt,n,sKm){
+  const ltS=sKm/111, lnS=sKm/(111*Math.cos(cLt*Math.PI/180));
+  const out=[];
+  for(let i=0;i<n;i++){
+    const r1=(Math.random()+Math.random()+Math.random())/3;
+    const r2=(Math.random()+Math.random()+Math.random())/3;
+    out.push({
+      type, lng:cLn+(r1-0.5)*lnS*2, lat:cLt+(r2-0.5)*ltS*2,
+      ts: Date.now() - Math.random()*86400000
+    });
+  }
+  return out;
+}
+
+const ALL=[
+  ...genCluster('infrastructure',-73.980,40.755,65,1.2),
+  ...genCluster('infrastructure',-73.945,40.725,40,0.8),
+  ...genCluster('pathway',-73.965,40.740,90,2.0),
+  ...genCluster('organic',-73.955,40.735,180,1.5),
+  ...genCluster('organic',-73.975,40.760,60,0.6),
+  ...genCluster('zone',-73.950,40.750,100,1.8)
+];
+
+const COL={infrastructure:'#151515',pathway:'#FF6600',organic:'#FF007F',zone:'#E5FF00'};
+const SZ={infrastructure:3,pathway:4,organic:5,zone:5};
+const ORD=['infrastructure','pathway','organic','zone'];
+const filters={infrastructure:true,pathway:true,organic:true,zone:true};
+
+/* ══════════════════════════════════════════════════════════════
+   SCATTER RENDERER
+   ══════════════════════════════════════════════════════════════ */
+
+const tac=document.getElementById('tac');
+const nodeEls=[];
+
+function renderScatter(){
+  const frag=document.createDocumentFragment();
+  [...ALL].sort((a,b)=>ORD.indexOf(a.type)-ORD.indexOf(b.type)).forEach((f,i)=>{
+    const p=proj(f.lng,f.lat);
+    const el=document.createElement('div');
+    el.className='dn';
+    el.dataset.cat=f.type;
+    el.dataset.lng=f.lng.toFixed(6);
+    el.dataset.lat=f.lat.toFixed(6);
+    el.dataset.idx=i;
+    el.style.cssText=`width:${SZ[f.type]}px;height:${SZ[f.type]}px;background:${COL[f.type]};left:${p.x}%;top:${p.y}%`;
+    frag.appendChild(el);
+    nodeEls.push(el);
+  });
+  tac.appendChild(frag);
+}
+renderScatter();
+
+/* ══════════════════════════════════════════════════════════════
+   HEATMAP ENGINE (Canvas)
+   ══════════════════════════════════════════════════════════════ */
+
+const heatCanvas=document.getElementById('heatmap');
+let heatVisible=false;
+
+function renderHeatmap(){
+  const rect=tac.getBoundingClientRect();
+  const w=rect.width, h=rect.height;
+  heatCanvas.width=w; heatCanvas.height=h;
+  const ctx=heatCanvas.getContext('2d');
+  ctx.clearRect(0,0,w,h);
+
+  const visible=ALL.filter(f=>filters[f.type]);
+
+  // Draw radial gradients for each point
+  visible.forEach(f=>{
+    const p=proj(f.lng,f.lat);
+    const px=p.x/100*w, py=p.y/100*h;
+    const r=25;
+    const grad=ctx.createRadialGradient(px,py,0,px,py,r);
+    grad.addColorStop(0,'rgba(255,0,127,0.15)');
+    grad.addColorStop(0.4,'rgba(255,102,0,0.06)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=grad;
+    ctx.fillRect(px-r,py-r,r*2,r*2);
+  });
+
+  // Color ramp via composite
+  const imgData=ctx.getImageData(0,0,w,h);
+  const d=imgData.data;
+  const ramp=[
+    [10,10,10],[26,10,46],[59,7,100],[124,45,142],
+    [194,24,91],[255,0,127],[255,102,0],[229,255,0],[255,255,255]
+  ];
+
+  for(let i=0;i<d.length;i+=4){
+    const intensity=d[i+3]/255;
+    if(intensity>0.01){
+      const idx=Math.min(Math.floor(intensity*8),7);
+      const t=(intensity*8)-idx;
+      const c1=ramp[idx], c2=ramp[Math.min(idx+1,8)];
+      d[i]=c1[0]+(c2[0]-c1[0])*t;
+      d[i+1]=c1[1]+(c2[1]-c1[1])*t;
+      d[i+2]=c1[2]+(c2[2]-c1[2])*t;
+      d[i+3]=Math.min(255,intensity*400);
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+}
+
+document.getElementById('tb-heat').addEventListener('click',function(){
+  heatVisible=!heatVisible;
+  this.classList.toggle('on',heatVisible);
+  heatCanvas.classList.toggle('visible',heatVisible);
+  if(heatVisible) renderHeatmap();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   PALANTIR CIRCLES
+   ══════════════════════════════════════════════════════════════ */
+
+const circEls=[];
+let circVis=true;
+
+function mkCircle(cLn,cLt,rKm,cls,del){
+  const ltR=rKm/111, lnR=rKm/(111*Math.cos(cLt*Math.PI/180));
+  const c=proj(cLn,cLt);
+  const rX=(lnR/(BB.mxLn-BB.mnLn))*100;
+  const rY=(ltR/(BB.mxLt-BB.mnLt))*100;
+  const avg=rX+rY;
+  const el=document.createElement('div');
+  el.className='gc '+cls;
+  el.style.cssText=`left:${c.x}%;top:${c.y}%;width:${avg}%;height:${avg}%;animation-delay:${del}s`;
+  tac.appendChild(el);
+  circEls.push(el);
+}
+
+mkCircle(-73.955,40.735,0.8,'c-pk',0.8);
+mkCircle(-73.980,40.755,1.0,'c-bl',1.0);
+mkCircle(-73.950,40.750,1.5,'c-yl',1.2);
+mkCircle(-73.965,40.740,0.6,'c-or',1.4);
+mkCircle(-73.960,40.748,0.4,'c-cy',1.6);
+
+document.getElementById('tb-circles').addEventListener('click',function(){
+  circVis=!circVis;
+  this.classList.toggle('on',circVis);
+  circEls.forEach(el=>el.style.display=circVis?'':'none');
+});
+
+document.getElementById('tb-scatter').addEventListener('click',function(){
+  const vis=this.classList.toggle('on');
+  nodeEls.forEach(n=>n.style.display=vis?'':'none');
+});
+
+/* ══════════════════════════════════════════════════════════════
+   CROSSHAIR, COORD HUD, FLARE TOOLTIP
+   ══════════════════════════════════════════════════════════════ */
+
+const chH=document.getElementById('chH'),chV=document.getElementById('chV');
+const hud=document.getElementById('hud'),flare=document.getElementById('flare');
+
+tac.addEventListener('mousemove',e=>{
+  const r=tac.getBoundingClientRect();
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  chH.style.display=chV.style.display='block';
+  chH.style.top=y+'px'; chV.style.left=x+'px';
+  const c=unproj((x/r.width)*100,(y/r.height)*100);
+  hud.innerHTML=`LAT ${c.lat.toFixed(6)}<br>LNG ${c.lng.toFixed(6)}`;
+});
+
+tac.addEventListener('mouseleave',()=>{
+  chH.style.display=chV.style.display='none';
+  hud.innerHTML='LAT ---.------<br>LNG ---.------';
+});
+
+// Flare on data node hover
+tac.addEventListener('mouseover',e=>{
+  if(!e.target.classList.contains('dn'))return;
+  const n=e.target,r=tac.getBoundingClientRect();
+  flare.style.display='block';
+  flare.innerHTML=`${n.dataset.cat.toUpperCase()} | ${n.dataset.lat}, ${n.dataset.lng}`;
+  flare.style.left=(e.clientX-r.left+12)+'px';
+  flare.style.top=(e.clientY-r.top-20)+'px';
+  n.style.transform='translate(-50%,-50%) scale(3.5)';
+  n.style.boxShadow=`0 0 10px ${COL[n.dataset.cat]}`;
+});
+
+tac.addEventListener('mouseout',e=>{
+  if(!e.target.classList.contains('dn'))return;
+  flare.style.display='none';
+  e.target.style.transform='translate(-50%,-50%) scale(1)';
+  e.target.style.boxShadow='none';
+});
+
+/* ══════════════════════════════════════════════════════════════
+   FEATURE DETAIL PANEL
+   ══════════════════════════════════════════════════════════════ */
+
+const detail=document.getElementById('detail');
+document.getElementById('dp-close').addEventListener('click',()=>detail.classList.remove('open'));
+
+tac.addEventListener('click',e=>{
+  if(!e.target.classList.contains('dn'))return;
+  if(activeTool!=='pointer')return;
+  const n=e.target;
+  const body=document.getElementById('dp-body');
+  document.getElementById('dp-title').textContent=n.dataset.cat.toUpperCase();
+  body.innerHTML=`
+    <div class="dp-row"><span class="dp-row-k">Category</span><span class="dp-row-v">${n.dataset.cat}</span></div>
+    <div class="dp-row"><span class="dp-row-k">Latitude</span><span class="dp-row-v c-bl">${n.dataset.lat}</span></div>
+    <div class="dp-row"><span class="dp-row-k">Longitude</span><span class="dp-row-v c-bl">${n.dataset.lng}</span></div>
+    <div class="dp-row"><span class="dp-row-k">Status</span><span class="dp-row-v" style="color:var(--mark-green)">LIVE</span></div>
+    <div class="dp-row"><span class="dp-row-k">Geometry</span><span class="dp-row-v">Point</span></div>
+    <div class="dp-row"><span class="dp-row-k">CRS</span><span class="dp-row-v">WGS 84</span></div>
+  `;
+  detail.classList.add('open');
+});
+
+/* ══════════════════════════════════════════════════════════════
+   TOOL SYSTEM (Pointer / Measure / Annotate)
+   ══════════════════════════════════════════════════════════════ */
+
+let activeTool='pointer';
+const annoSvg=document.getElementById('anno-svg');
+
+document.querySelectorAll('[data-tool]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-tool]').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    activeTool=btn.dataset.tool;
+    annoSvg.classList.toggle('drawing',activeTool==='annotate'||activeTool==='measure');
+    tac.style.cursor=activeTool==='pointer'?'crosshair':'crosshair';
+    // Reset measure state
+    if(activeTool!=='measure'){ measureState.active=false; }
+  });
+});
+
+// ── MEASURE TOOL ──
+const measureState={active:false, x1:0, y1:0, lat1:0, lng1:0};
+
+annoSvg.addEventListener('click',e=>{
+  if(activeTool!=='measure')return;
+  const r=tac.getBoundingClientRect();
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  const c=unproj((x/r.width)*100,(y/r.height)*100);
+
+  if(!measureState.active){
+    measureState.active=true;
+    measureState.x1=x; measureState.y1=y;
+    measureState.lat1=c.lat; measureState.lng1=c.lng;
+  } else {
+    const dist=haversine(measureState.lat1,measureState.lng1,c.lat,c.lng);
+    const mx=(measureState.x1+x)/2, my=(measureState.y1+y)/2;
+
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',measureState.x1); line.setAttribute('y1',measureState.y1);
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    line.setAttribute('class','measure-line');
+    annoSvg.appendChild(line);
+
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',mx); txt.setAttribute('y',my-6);
+    txt.setAttribute('class','measure-label');
+    txt.setAttribute('text-anchor','middle');
+    txt.textContent=dist.toFixed(2)+' km';
+    annoSvg.appendChild(txt);
+
+    measureState.active=false;
+    toast('info','Measurement',dist.toFixed(2)+' km between points');
+  }
+});
+
+// ── ANNOTATE TOOL ──
+let annoPoints=[];
+
+annoSvg.addEventListener('click',e=>{
+  if(activeTool!=='annotate')return;
+  const r=tac.getBoundingClientRect();
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  annoPoints.push({x,y});
+
+  // Draw marker
+  const circ=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  circ.setAttribute('cx',x); circ.setAttribute('cy',y); circ.setAttribute('r',3);
+  circ.setAttribute('class','anno-marker');
+  annoSvg.appendChild(circ);
+
+  if(annoPoints.length>1){
+    const prev=annoPoints[annoPoints.length-2];
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',prev.x); line.setAttribute('y1',prev.y);
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    line.setAttribute('class','anno-line');
+    line.setAttribute('stroke','var(--mark-cyan)');
+    annoSvg.appendChild(line);
+  }
+});
+
+// Double-click to finish annotation
+annoSvg.addEventListener('dblclick',()=>{
+  if(activeTool==='annotate' && annoPoints.length>0){
+    toast('info','Annotation',annoPoints.length+' points recorded');
+    annoPoints=[];
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   LAYER FILTER
+   ══════════════════════════════════════════════════════════════ */
+
+document.querySelectorAll('.lg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const cat=btn.dataset.cat;
+    filters[cat]=!filters[cat];
+    btn.classList.toggle('off',!filters[cat]);
+    nodeEls.forEach(n=>{if(n.dataset.cat===cat) n.classList.toggle('hide',!filters[cat]);});
+    updateStats();
+    if(heatVisible) renderHeatmap();
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   STATS, DENSITY, SPARKLINE, GAUGES, GEOJSON
+   ══════════════════════════════════════════════════════════════ */
+
+function updateStats(){
+  const vis=ALL.filter(f=>filters[f.type]);
+  const ct={}; ORD.forEach(t=>ct[t]=vis.filter(f=>f.type===t).length);
+  const max=Math.max(...Object.values(ct),1);
+
+  document.getElementById('p-feat').textContent=vis.length;
+  document.getElementById('feed-ct').textContent=vis.length;
+  document.getElementById('dbi').style.width=(ct.infrastructure/max*100)+'%';
+  document.getElementById('dbp').style.width=(ct.pathway/max*100)+'%';
+  document.getElementById('dbo').style.width=(ct.organic/max*100)+'%';
+  document.getElementById('dbz').style.width=(ct.zone/max*100)+'%';
+  document.getElementById('dbi-v').textContent=ct.infrastructure;
+  document.getElementById('dbp-v').textContent=ct.pathway;
+  document.getElementById('dbo-v').textContent=ct.organic;
+  document.getElementById('dbz-v').textContent=ct.zone;
+
+  // GeoJSON
+  const geo=toGeoJSON(vis);
+  const json=JSON.stringify(geo,null,2)
+    .replace(/"([^"]+)":/g,'<span class="jk">"$1"</span>:')
+    .replace(/: "([^"]+)"/g,': <span class="js">"$1"</span>')
+    .replace(/: (-?\d+\.?\d*)/g,': <span class="jn">$1</span>');
+  document.getElementById('gj-out').innerHTML=json;
+}
+
+// Sparkline
+function buildSparkline(){
+  const el=document.getElementById('spark');
+  const bars=24;
+  for(let i=0;i<bars;i++){
+    const b=document.createElement('div');
+    b.className='spark-bar';
+    b.style.height=(10+Math.random()*90)+'%';
+    if(i>18) b.style.background='var(--mark-orange)';
+    el.appendChild(b);
+  }
+}
+buildSparkline();
+
+// Gauges
+function buildGauges(){
+  const el=document.getElementById('gauges');
+  const data=[
+    {label:'INFRA',pct:78,color:'var(--sub-archival)'},
+    {label:'PATH',pct:62,color:'var(--mark-orange)'},
+    {label:'ORG',pct:91,color:'var(--mark-pink)'},
+    {label:'ZONE',pct:55,color:'var(--mark-yellow)'}
+  ];
+  const C=Math.PI*2*18;
+  data.forEach(d=>{
+    const g=document.createElement('div');
+    g.className='gauge';
+    g.innerHTML=`
+      <svg viewBox="0 0 44 44"><circle class="gauge-bg" cx="22" cy="22" r="18"/><circle class="gauge-fill" cx="22" cy="22" r="18" stroke="${d.color}" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-d.pct/100)}"/></svg>
+      <div class="gauge-label"><span class="gauge-pct" style="color:${d.color}">${d.pct}%</span>${d.label}</div>
+    `;
+    el.appendChild(g);
+  });
+}
+buildGauges();
+
+updateStats();
+
+/* ══════════════════════════════════════════════════════════════
+   MINIMAP
+   ══════════════════════════════════════════════════════════════ */
+
+function renderMinimap(){
+  const cvs=document.getElementById('mm-canvas');
+  cvs.width=240; cvs.height=180;
+  const ctx=cvs.getContext('2d');
+  ctx.fillStyle='#151515'; ctx.fillRect(0,0,240,180);
+
+  ALL.filter(f=>filters[f.type]).forEach(f=>{
+    const p=proj(f.lng,f.lat);
+    ctx.beginPath();
+    ctx.arc(p.x/100*240, p.y/100*180, 1.5, 0, Math.PI*2);
+    ctx.fillStyle=COL[f.type];
+    ctx.fill();
+  });
+}
+renderMinimap();
+
+/* ══════════════════════════════════════════════════════════════
+   TEMPORAL SCRUBBER
+   ══════════════════════════════════════════════════════════════ */
+
+// Build histogram bars
+const scrubBars=document.getElementById('scrub-bars');
+for(let i=0;i<48;i++){
+  const b=document.createElement('div');
+  b.className='scrub-bar';
+  b.style.height=(5+Math.random()*95)+'%';
+  if(Math.random()>0.8) b.style.background='rgba(255,102,0,0.15)';
+  scrubBars.appendChild(b);
+}
+
+// Scrub head drag
+const scrubHead=document.getElementById('scrub-head');
+const scrubTrack=document.getElementById('scrub-track');
+const scrubTime=document.getElementById('scrub-time');
+let scrubDrag=false;
+
+function updateScrubPos(clientX){
+  const r=scrubTrack.getBoundingClientRect();
+  let pct=Math.max(0,Math.min(100,((clientX-r.left)/r.width)*100));
+  scrubHead.style.left=pct+'%';
+  const hrs=Math.floor(pct/100*24);
+  const mins=Math.floor((pct/100*1440)%60);
+  scrubTime.textContent=String(hrs).padStart(2,'0')+':'+String(mins).padStart(2,'0');
+}
+
+scrubTrack.addEventListener('mousedown',e=>{scrubDrag=true; updateScrubPos(e.clientX);});
+document.addEventListener('mousemove',e=>{if(scrubDrag) updateScrubPos(e.clientX);});
+document.addEventListener('mouseup',()=>{scrubDrag=false;});
+
+// Play button
+let playing=false, playInterval;
+document.getElementById('scrub-play').addEventListener('click',function(){
+  playing=!playing;
+  this.classList.toggle('playing',playing);
+  this.textContent=playing?'■':'▶';
+  if(playing){
+    let pos=parseFloat(scrubHead.style.left)||0;
+    playInterval=setInterval(()=>{
+      pos+=0.15;
+      if(pos>100) pos=0;
+      scrubHead.style.left=pos+'%';
+      const hrs=Math.floor(pos/100*24);
+      const mins=Math.floor((pos/100*1440)%60);
+      scrubTime.textContent=String(hrs).padStart(2,'0')+':'+String(mins).padStart(2,'0');
+    },50);
+  } else {
+    clearInterval(playInterval);
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   INTEL FEED
+   ══════════════════════════════════════════════════════════════ */
+
+const INTEL=[
+  {type:'SIGINT',title:'RF emission cluster detected — Sector 3-A',cat:'organic',pri:'crit',lat:40.735,lng:-73.955},
+  {type:'GEOINT',title:'Infrastructure density anomaly — NW quadrant',cat:'infrastructure',pri:'high',lat:40.755,lng:-73.980},
+  {type:'MASINT',title:'Thermal signature shift — Zone perimeter',cat:'zone',pri:'',lat:40.750,lng:-73.950},
+  {type:'OSINT',title:'New pathway correlation identified',cat:'pathway',pri:'',lat:40.740,lng:-73.965},
+  {type:'GEOINT',title:'Organic cluster expansion — 12% growth',cat:'organic',pri:'high',lat:40.760,lng:-73.975},
+  {type:'SIGINT',title:'Secondary infrastructure node activated',cat:'infrastructure',pri:'',lat:40.725,lng:-73.945},
+  {type:'HUMINT',title:'Ground report confirms pathway alignment',cat:'pathway',pri:'',lat:40.738,lng:-73.960},
+  {type:'GEOINT',title:'Zone boundary recalibration required',cat:'zone',pri:'high',lat:40.748,lng:-73.952},
+  {type:'ELINT',title:'New emitter signature cataloged',cat:'infrastructure',pri:'',lat:40.752,lng:-73.970},
+  {type:'IMINT',title:'Imagery confirms organic spread vector',cat:'organic',pri:'crit',lat:40.733,lng:-73.958},
+];
+
+const feedEl=document.getElementById('feed');
+INTEL.forEach((item,i)=>{
+  const ts=new Date(Date.now()-(i*847000+Math.random()*300000));
+  const card=document.createElement('div');
+  card.className='ic'+(item.pri==='crit'?' p-crit':item.pri==='high'?' p-high':'');
+  card.innerHTML=`
+    <div class="ic-head"><span class="ic-type">${item.type}</span><span class="ic-time">${ts.toISOString().slice(11,19)}Z</span></div>
+    <div class="ic-title">${item.title}</div>
+    <div class="ic-coord">${item.lat.toFixed(4)}, ${item.lng.toFixed(4)}</div>
+  `;
+  feedEl.appendChild(card);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST SYSTEM
+   ══════════════════════════════════════════════════════════════ */
+
+const toastContainer=document.getElementById('toasts');
+
+function toast(type,title,msg){
+  const cls={critical:'t-crit',warning:'t-warn',nominal:'t-nom',info:'t-info'}[type]||'t-info';
+  const el=document.createElement('div');
+  el.className='toast '+cls;
+  el.innerHTML=`<span class="toast-dot"></span><div class="toast-msg"><strong>${title}</strong>${msg}</div>`;
+  toastContainer.appendChild(el);
+  setTimeout(()=>{el.classList.add('removing'); setTimeout(()=>el.remove(),200);},4000);
+}
+
+// Fire initial toasts
+setTimeout(()=>toast('nominal','System','DOSSIER VOL v3.0 initialized — 535 features loaded'),800);
+setTimeout(()=>toast('info','RFC 7946','GeoJSON projection engine active'),1600);
+
+/* ══════════════════════════════════════════════════════════════
+   COMMAND PALETTE
+   ══════════════════════════════════════════════════════════════ */
+
+const cmdOverlay=document.getElementById('cmd');
+const cmdInput=document.getElementById('cmd-input');
+const cmdList=document.getElementById('cmd-list');
+
+const CMDS=[
+  {name:'Toggle Heatmap',desc:'Show/hide density heatmap',key:'H',action:()=>document.getElementById('tb-heat').click()},
+  {name:'Toggle Circles',desc:'Show/hide radius overlays',key:'C',action:()=>document.getElementById('tb-circles').click()},
+  {name:'Toggle Scatter',desc:'Show/hide scatter nodes',key:'S',action:()=>document.getElementById('tb-scatter').click()},
+  {name:'Measure Tool',desc:'Activate ruler measurement',key:'M',action:()=>document.querySelector('[data-tool="measure"]').click()},
+  {name:'Annotate Tool',desc:'Draw annotation polyline',key:'A',action:()=>document.querySelector('[data-tool="annotate"]').click()},
+  {name:'Pointer Tool',desc:'Default selection mode',key:'P',action:()=>document.querySelector('[data-tool="pointer"]').click()},
+  {name:'Export GeoJSON',desc:'Download current features as .geojson',key:'E',action:exportGeoJSON},
+  {name:'View: Operational',desc:'Switch to ops view',key:'1',action:()=>document.querySelector('[data-v="ops"]').click()},
+  {name:'View: Tokens',desc:'Switch to design system',key:'2',action:()=>document.querySelector('[data-v="tokens"]').click()},
+  {name:'Clear Annotations',desc:'Remove all drawings',key:'X',action:()=>{annoSvg.innerHTML=''; toast('info','Cleared','All annotations removed');}},
+];
+
+function renderCmds(filter=''){
+  const f=filter.toLowerCase();
+  const matches=CMDS.filter(c=>c.name.toLowerCase().includes(f)||c.desc.toLowerCase().includes(f));
+  cmdList.innerHTML='';
+  matches.forEach((c,i)=>{
+    const item=document.createElement('div');
+    item.className='cmd-item'+(i===0?' active':'');
+    item.innerHTML=`
+      <div class="cmd-item-icon">${c.key}</div>
+      <div class="cmd-item-text">${c.name}<span>${c.desc}</span></div>
+    `;
+    item.addEventListener('click',()=>{c.action(); closeCmd();});
+    cmdList.appendChild(item);
+  });
+}
+
+function openCmd(){
+  cmdOverlay.classList.add('open');
+  cmdInput.value='';
+  renderCmds();
+  setTimeout(()=>cmdInput.focus(),50);
+}
+
+function closeCmd(){ cmdOverlay.classList.remove('open'); }
+
+document.getElementById('cmd-trigger').addEventListener('click',openCmd);
+
+cmdOverlay.addEventListener('click',e=>{if(e.target===cmdOverlay) closeCmd();});
+
+cmdInput.addEventListener('input',()=>renderCmds(cmdInput.value));
+
+cmdInput.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeCmd();
+  if(e.key==='Enter'){
+    const first=cmdList.querySelector('.cmd-item');
+    if(first) first.click();
+  }
+});
+
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault(); openCmd();}
+  if(e.key==='Escape'&&cmdOverlay.classList.contains('open')) closeCmd();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   GEOJSON EXPORT
+   ══════════════════════════════════════════════════════════════ */
+
+function exportGeoJSON(){
+  const vis=ALL.filter(f=>filters[f.type]);
+  const geo={
+    type:"FeatureCollection",
+    features:vis.map((f,i)=>({
+      type:"Feature",id:i,
+      geometry:{type:"Point",coordinates:[+f.lng.toFixed(6),+f.lat.toFixed(6)]},
+      properties:{category:f.type,timestamp:new Date(f.ts).toISOString()}
+    }))
+  };
+  const blob=new Blob([JSON.stringify(geo,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='dossier_export.geojson';
+  a.click(); URL.revokeObjectURL(url);
+  toast('nominal','Export',vis.length+' features exported as GeoJSON');
+}
+
+document.getElementById('tb-export').addEventListener('click',exportGeoJSON);
+
+/* ══════════════════════════════════════════════════════════════
+   DRAG-DROP GEOJSON IMPORT
+   ══════════════════════════════════════════════════════════════ */
+
+const dropzone=document.getElementById('dropzone');
+let dragCounter=0;
+
+document.addEventListener('dragenter',e=>{e.preventDefault(); dragCounter++; dropzone.classList.add('active');});
+document.addEventListener('dragleave',e=>{e.preventDefault(); dragCounter--; if(dragCounter<=0){dropzone.classList.remove('active');dragCounter=0;}});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{
+  e.preventDefault(); dragCounter=0; dropzone.classList.remove('active');
+  const file=e.dataTransfer.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.type==='FeatureCollection'&&data.features){
+        toast('nominal','Import',data.features.length+' features imported from '+file.name);
+      } else {
+        toast('warning','Import','Invalid GeoJSON structure');
+      }
+    }catch(err){
+      toast('critical','Import','Failed to parse file');
+    }
+  };
+  reader.readAsText(file);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   TOKEN VIEW: SWATCHES & RAMP
+   ══════════════════════════════════════════════════════════════ */
+
+const SUBS=[
+  {n:'Void',v:'--sub-void',h:'#0A0A0A',lt:1},{n:'Ink',v:'--sub-ink',h:'#151515',lt:1},
+  {n:'Charcoal',v:'--sub-charcoal',h:'#1E1E1E',lt:1},{n:'Graphite',v:'--sub-graphite',h:'#2A2A2A',lt:1},
+  {n:'Slate',v:'--sub-slate',h:'#333333',lt:1},{n:'Terrain',v:'--sub-terrain',h:'#5D685C',lt:1},
+  {n:'Grey',v:'--sub-grey',h:'#8A8D8C',lt:0},{n:'Kraft',v:'--sub-kraft',h:'#A6927E',lt:0},
+  {n:'Leather',v:'--sub-leather',h:'#7B5842',lt:1},{n:'Bone',v:'--sub-bone',h:'#D4CFC8',lt:0},
+  {n:'Archival',v:'--sub-archival',h:'#F0F0F0',lt:0},
+];
+
+const MARKS=[
+  {n:'Blue',v:'--mark-blue',h:'#0055D4',lt:1},{n:'Blue Lt',v:'--mark-blue-lt',h:'#29A5FF',lt:0},
+  {n:'Orange',v:'--mark-orange',h:'#FF6600',lt:0},{n:'Pink',v:'--mark-pink',h:'#FF007F',lt:1},
+  {n:'Yellow',v:'--mark-yellow',h:'#E5FF00',lt:0},{n:'Green',v:'--mark-green',h:'#00FF88',lt:0},
+  {n:'Red',v:'--mark-red',h:'#FF2233',lt:1},{n:'Cyan',v:'--mark-cyan',h:'#00E5FF',lt:0},
+  {n:'Violet',v:'--mark-violet',h:'#B84DFF',lt:1},
+];
+
+function mkSwatches(items,id){
+  const el=document.getElementById(id);
+  items.forEach(s=>{
+    el.innerHTML+=`<div class="sw"><div class="sw-color ${s.lt?'lt':'dk'}" style="background:${s.h}" data-hex="${s.h}"></div><div class="sw-info"><div class="sw-name">${s.n}</div><div class="sw-var">${s.v}</div></div></div>`;
+  });
+}
+mkSwatches(SUBS,'sw-sub');
+mkSwatches(MARKS,'sw-mark');
+
+// Heatmap ramp
+const RAMP=['#0A0A0A','#1a0a2e','#3b0764','#7c2d8e','#c2185b','#FF007F','#FF6600','#E5FF00','#FFFFFF'];
+const rampEl=document.getElementById('ramp');
+RAMP.forEach((c,i)=>{
+  rampEl.innerHTML+=`<div class="ramp-seg" style="background:${c}" data-label="${i===0?'Low':i===8?'High':''}"></div>`;
+});
+
+/* ══════════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+   ══════════════════════════════════════════════════════════════ */
+
+document.addEventListener('keydown',e=>{
+  if(cmdOverlay.classList.contains('open'))return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  const k=e.key.toLowerCase();
+  if(k==='h') document.getElementById('tb-heat').click();
+  if(k==='c') document.getElementById('tb-circles').click();
+  if(k==='s') document.getElementById('tb-scatter').click();
+  if(k==='m') document.querySelector('[data-tool="measure"]').click();
+  if(k==='a') document.querySelector('[data-tool="annotate"]').click();
+  if(k==='p') document.querySelector('[data-tool="pointer"]').click();
+  if(k==='e') exportGeoJSON();
+  if(k==='x'){annoSvg.innerHTML=''; toast('info','Cleared','All annotations removed');}
+  if(k==='1') document.querySelector('[data-v="ops"]').click();
+  if(k==='2') document.querySelector('[data-v="tokens"]').click();
+});
+
+})();
+</script>
+</body>
+</html>

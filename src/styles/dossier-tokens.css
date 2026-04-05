@@ -1,0 +1,95 @@
+/* ═══════════════════════════════════════════════════════════════
+   DOSSIER VOL — Design Tokens v3.0
+   Visual Operating Language for Intelligence-Style Geospatial Products
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --sub-void: #0a0a0a;
+  --sub-ink: #151515;
+  --sub-charcoal: #1e1e1e;
+  --sub-graphite: #2a2a2a;
+  --sub-slate: #333333;
+  --sub-terrain: #5d685c;
+  --sub-kraft: #a6927e;
+  --sub-leather: #7b5842;
+  --sub-grey: #8a8d8c;
+  --sub-bone: #d4cfc8;
+  --sub-archival: #f0f0f0;
+
+  --mark-blue: #0055d4;
+  --mark-blue-lt: #29a5ff;
+  --mark-orange: #ff6600;
+  --mark-pink: #ff007f;
+  --mark-yellow: #e5ff00;
+  --mark-green: #00ff88;
+  --mark-red: #ff2233;
+  --mark-cyan: #00e5ff;
+  --mark-violet: #b84dff;
+
+  --state-active: var(--mark-yellow);
+  --state-warning: var(--mark-orange);
+  --state-critical: var(--mark-red);
+  --state-nominal: var(--mark-green);
+  --state-info: var(--mark-blue-lt);
+  --state-inert: var(--sub-grey);
+
+  --heat-0: #0a0a0a;
+  --heat-1: #1a0a2e;
+  --heat-2: #3b0764;
+  --heat-3: #7c2d8e;
+  --heat-4: #c2185b;
+  --heat-5: #ff007f;
+  --heat-6: #ff6600;
+  --heat-7: #e5ff00;
+  --heat-8: #ffffff;
+
+  --cat-infrastructure: var(--sub-archival);
+  --cat-pathway: var(--mark-orange);
+  --cat-organic: var(--mark-pink);
+  --cat-zone: var(--mark-yellow);
+  --cat-uncategorized: var(--sub-grey);
+
+  --type-display: 'DM Sans', sans-serif;
+  --type-mono: 'JetBrains Mono', monospace;
+
+  --fs-hero: clamp(3rem, 8vw, 7rem);
+  --fs-display: clamp(1.5rem, 3vw, 2.5rem);
+  --fs-heading: clamp(0.9rem, 1.5vw, 1.1rem);
+  --fs-body: 0.75rem;
+  --fs-caption: 0.6rem;
+  --fs-micro: 0.5rem;
+  --fs-nano: 0.4rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  --elev-card: 2px 4px 12px rgba(0, 0, 0, 0.5);
+  --elev-float: 4px 8px 24px rgba(0, 0, 0, 0.7);
+  --elev-popup: 0 12px 40px rgba(0, 0, 0, 0.8);
+  --elev-stamp: 0 2px 6px rgba(0, 0, 0, 0.4);
+
+  --border-hard: 2px solid var(--sub-ink);
+  --border-rule: 1px solid rgba(255, 255, 255, 0.06);
+  --border-focus: 1px solid var(--mark-yellow);
+
+  --ease-physical: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --dur-fast: 0.15s;
+  --dur-med: 0.3s;
+  --dur-slow: 0.6s;
+
+  --z-base: 1;
+  --z-card: 10;
+  --z-overlay: 100;
+  --z-modal: 500;
+  --z-toast: 800;
+  --z-strip: 900;
+  --z-cmd: 950;
+}

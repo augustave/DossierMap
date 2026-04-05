@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════
+   DOSSIER VOL — Design Tokens v3.0
+   Visual Operating Language for Intelligence-Style Geospatial Products
+   
+   Import this file into any project to consume the full token system.
+   All components, layouts, and visualizations derive from these values.
+   
+   Usage:  @import 'dossier-tokens.css';
+   Fonts:  Requires DM Sans + JetBrains Mono (Google Fonts)
+   Spec:   See DOSSIER_VOL_SPECIFICATION_v3.pdf
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── SUBSTRATE PALETTE ──────────────────────────────────────
+     Raw physical materials. Each maps to a dossier metaphor:
+     void = empty desk, ink = printed text, terrain = map topo,
+     kraft = cardboard, archival = bleached paper.
+     ──────────────────────────────────────────────────────────── */
+  --sub-void:       #0A0A0A;
+  --sub-ink:        #151515;
+  --sub-charcoal:   #1E1E1E;
+  --sub-graphite:   #2A2A2A;
+  --sub-slate:      #333333;
+  --sub-terrain:    #5D685C;
+  --sub-kraft:      #A6927E;
+  --sub-leather:    #7B5842;
+  --sub-grey:       #8A8D8C;
+  --sub-bone:       #D4CFC8;
+  --sub-archival:   #F0F0F0;
+
+  /* ── TACTICAL MARKERS ───────────────────────────────────────
+     High-visibility data points. Magnesium-flare neons against
+     muted substrate. Zero opacity, zero gradient — pure fill.
+     ──────────────────────────────────────────────────────────── */
+  --mark-blue:      #0055D4;   /* Tension band, active UI */
+  --mark-blue-lt:   #29A5FF;   /* Tab highlights, info state */
+  --mark-orange:    #FF6600;   /* Flare alerts, pathway data */
+  --mark-pink:      #FF007F;   /* Organic density, tracking */
+  --mark-yellow:    #E5FF00;   /* Active state, zone data, primary accent */
+  --mark-green:     #00FF88;   /* Nominal state, live indicators */
+  --mark-red:       #FF2233;   /* Critical state, priority escalation */
+  --mark-cyan:      #00E5FF;   /* Measurement, annotation tools */
+  --mark-violet:    #B84DFF;   /* Annotation, tertiary classification */
+
+  /* ── SEMANTIC STATES ────────────────────────────────────────
+     Fixed-vocabulary mapping. Every status resolves to one of these.
+     ──────────────────────────────────────────────────────────── */
+  --state-active:   var(--mark-yellow);
+  --state-warning:  var(--mark-orange);
+  --state-critical: var(--mark-red);
+  --state-nominal:  var(--mark-green);
+  --state-info:     var(--mark-blue-lt);
+  --state-inert:    var(--sub-grey);
+
+  /* ── HEATMAP RAMP ───────────────────────────────────────────
+     9-stop continuous ramp for density visualization.
+     void → violet → magenta → crimson → pink → orange → yellow → white
+     ──────────────────────────────────────────────────────────── */
+  --heat-0: #0A0A0A;
+  --heat-1: #1a0a2e;
+  --heat-2: #3b0764;
+  --heat-3: #7c2d8e;
+  --heat-4: #c2185b;
+  --heat-5: #FF007F;
+  --heat-6: #FF6600;
+  --heat-7: #E5FF00;
+  --heat-8: #FFFFFF;
+
+  /* ── CATEGORY COLOR MAPPING ─────────────────────────────────
+     Fixed assignment for geospatial data classification.
+     ──────────────────────────────────────────────────────────── */
+  --cat-infrastructure: var(--sub-ink);       /* Base points, foundational */
+  --cat-pathway:        var(--mark-orange);   /* Connections, movement */
+  --cat-organic:        var(--mark-pink);     /* Biological, high-density */
+  --cat-zone:           var(--mark-yellow);   /* Environmental, categorical */
+
+  /* ── TYPE SCALE ─────────────────────────────────────────────
+     Display: DM Sans — massive, commanding, classification stamps.
+     Data: JetBrains Mono — small, dense, coordinate precision.
+     ──────────────────────────────────────────────────────────── */
+  --type-display:   'DM Sans', sans-serif;
+  --type-mono:      'JetBrains Mono', monospace;
+
+  --fs-hero:        clamp(3rem, 8vw, 7rem);
+  --fs-display:     clamp(1.5rem, 3vw, 2.5rem);
+  --fs-heading:     clamp(0.9rem, 1.5vw, 1.1rem);
+  --fs-body:        0.75rem;     /* 12px */
+  --fs-caption:     0.6rem;      /* 9.6px */
+  --fs-micro:       0.5rem;      /* 8px */
+  --fs-nano:        0.4rem;      /* 6.4px */
+
+  /* ── SPACING ────────────────────────────────────────────────
+     Linear 4px-base scale. Mechanical, not organic.
+     ──────────────────────────────────────────────────────────── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ── ELEVATION ──────────────────────────────────────────────
+     Physical shadow vocabulary. Cards cast real shadows.
+     ──────────────────────────────────────────────────────────── */
+  --elev-card:    2px 4px 12px rgba(0, 0, 0, 0.5);
+  --elev-float:   4px 8px 24px rgba(0, 0, 0, 0.7);
+  --elev-popup:   0 12px 40px rgba(0, 0, 0, 0.8);
+  --elev-stamp:   0 2px 6px rgba(0, 0, 0, 0.4);
+
+  /* ── BORDERS ────────────────────────────────────────────────
+     ──────────────────────────────────────────────────────────── */
+  --border-hard:    2px solid var(--sub-ink);
+  --border-rule:    1px solid rgba(255, 255, 255, 0.06);
+  --border-focus:   1px solid var(--mark-yellow);
+  --border-glow:    1px solid;
+
+  /* ── MOTION ─────────────────────────────────────────────────
+     Physical, not digital. Cards slide, tabs pull, stickers slam.
+     ──────────────────────────────────────────────────────────── */
+  --ease-physical:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-snap:      cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:       cubic-bezier(0, 0, 0.2, 1);
+
+  --dur-fast:       0.15s;   /* Hover states, toggle flips */
+  --dur-med:        0.3s;    /* Panel transitions, filter changes */
+  --dur-slow:       0.6s;    /* Circle reveals, page entrances */
+
+  /* ── Z-INDEX SCALE ──────────────────────────────────────────
+     Strict hierarchy. No arbitrary values.
+     ──────────────────────────────────────────────────────────── */
+  --z-base:         1;
+  --z-card:         10;
+  --z-scatter:      5;
+  --z-circle:       6;
+  --z-annotation:   7;
+  --z-overlay:      100;
+  --z-modal:        500;
+  --z-toast:        800;
+  --z-strip:        900;
+  --z-cmd:          950;
+
+  /* ── SCATTER NODE SIZES ─────────────────────────────────────
+     Fixed diameter. Does not scale with zoom.
+     ──────────────────────────────────────────────────────────── */
+  --node-sm:        3px;
+  --node-md:        5px;
+  --node-lg:        7px;
+
+  /* ── CANVAS ─────────────────────────────────────────────────
+     Default bounding box (NYC). Override per deployment.
+     ──────────────────────────────────────────────────────────── */
+  --bbox-min-lng:   -73.995;
+  --bbox-max-lng:   -73.930;
+  --bbox-min-lat:   40.710;
+  --bbox-max-lat:   40.780;
+}
