@@ -26,18 +26,18 @@ export function TopStrip({ activeView, onViewChange, onCommandOpen }: TopStripPr
         <span className="strip-logo">DOSSIER VOL</span>
         <nav className="strip-nav" aria-label="Primary">
           <button
-            className={`strip-btn ${activeView === 'ops' ? 'active' : ''}`}
-            onClick={() => onViewChange('ops')}
-            type="button"
-          >
-            (1) Ops
-          </button>
-          <button
             className={`strip-btn ${activeView === 'tokens' ? 'active' : ''}`}
             onClick={() => onViewChange('tokens')}
             type="button"
           >
-            (2) Tokens
+            (1) Tokens
+          </button>
+          <button
+            className={`strip-btn ${activeView === 'ops' ? 'active' : ''}`}
+            onClick={() => onViewChange('ops')}
+            type="button"
+          >
+            (2) Ops
           </button>
         </nav>
       </div>

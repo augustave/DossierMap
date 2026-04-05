@@ -32,7 +32,7 @@ const DEFAULT_LAYERS: LayerVisibility = {
 };
 
 export default function App() {
-  const [activeView, setActiveView] = useState<ViewId>('ops');
+  const [activeView, setActiveView] = useState<ViewId>('tokens');
   const [datasetLabel, setDatasetLabel] = useState('Awaiting GeoJSON');
   const [features, setFeatures] = useState<NormalizedFeature[]>([]);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
@@ -80,10 +80,10 @@ export default function App() {
       const key = event.key.toLowerCase();
 
       if (key === '1') {
-        setActiveView('ops');
+        setActiveView('tokens');
       }
       if (key === '2') {
-        setActiveView('tokens');
+        setActiveView('ops');
       }
       if (activeView !== 'ops') {
         return;
@@ -217,17 +217,17 @@ export default function App() {
   const commands: CommandItem[] = [
     {
       id: 'view-ops',
-      name: 'View: Operational',
-      description: 'Switch to the primary map workflow.',
+      name: 'View: Design System',
+      description: 'Open the live token and component reference.',
       keyHint: '1',
-      action: () => setActiveView('ops'),
+      action: () => setActiveView('tokens'),
     },
     {
       id: 'view-tokens',
-      name: 'View: Tokens',
-      description: 'Open the live design system reference.',
+      name: 'View: Operational',
+      description: 'Switch to the primary map workflow.',
       keyHint: '2',
-      action: () => setActiveView('tokens'),
+      action: () => setActiveView('ops'),
     },
     {
       id: 'toggle-points',
