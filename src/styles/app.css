@@ -13,12 +13,13 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+  min-height: 100vh;
   background: var(--sub-void);
   color: var(--sub-archival);
   font-family: var(--type-mono);
   font-size: var(--fs-body);
   line-height: 1.5;
-  overflow-x: hidden;
+  overflow: hidden;
   cursor: crosshair;
 }
 
@@ -173,17 +174,18 @@ body::before {
   position: relative;
   z-index: var(--z-base);
   margin-top: 34px;
-  min-height: calc(100vh - 34px);
+  height: calc(100vh - 34px);
 }
 
 .vp {
-  min-height: calc(100vh - 34px);
+  height: 100%;
 }
 
 .ops {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr) 280px;
-  min-height: calc(100vh - 34px);
+  height: 100%;
+  overflow: hidden;
 }
 
 .sb {
@@ -191,7 +193,8 @@ body::before {
   flex-direction: column;
   background: rgba(30, 30, 30, 0.98);
   border-right: var(--border-rule);
-  min-height: calc(100vh - 34px);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .sb-r {
@@ -236,6 +239,8 @@ body::before {
 .sb-scroll {
   display: grid;
   gap: var(--sp-2);
+  min-height: 0;
+  flex: 1;
   overflow: auto;
 }
 
@@ -243,6 +248,7 @@ body::before {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
 .tb {
@@ -302,7 +308,7 @@ body::before {
 .canvas-wrap {
   position: relative;
   flex: 1;
-  min-height: 460px;
+  min-height: 0;
   background: var(--sub-charcoal);
 }
 
@@ -431,12 +437,14 @@ body::before {
 
 .pn {
   border-bottom: var(--border-rule);
+  min-height: 0;
 }
 
 .pn.grow {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .db-group {
@@ -520,6 +528,12 @@ body::before {
   color: var(--sub-grey);
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.gj-block {
+  margin: 0;
+  overflow: auto;
+  min-height: 0;
 }
 
 .gauge-row,
@@ -997,8 +1011,19 @@ body::before {
 }
 
 @media (max-width: 1180px) {
+  body {
+    overflow: auto;
+  }
+
+  .view-root,
+  .vp,
+  .ops {
+    height: auto;
+  }
+
   .ops {
     grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
   }
 
   .sb,
@@ -1006,6 +1031,7 @@ body::before {
     min-height: auto;
     border-left: none;
     border-right: none;
+    overflow: visible;
   }
 
   .sb {
@@ -1014,6 +1040,7 @@ body::before {
 
   .main {
     order: 1;
+    min-height: 720px;
   }
 
   .sb-r {

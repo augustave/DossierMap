@@ -83,7 +83,22 @@ export function OpsView({
   );
   const maxCategoryCount = Math.max(...Object.values(categoryCounts), 1);
   const intelFeed = visibleFeatures.slice(0, 8);
-  const geoJsonPreview = JSON.stringify(toFeatureCollection(visibleFeatures.slice(0, 3)), null, 2);
+  const geoJsonPreview = JSON.stringify(
+    {
+      type: 'FeatureCollection',
+      visibleCount: featureCount,
+      preview: visibleFeatures.slice(0, 3).map((feature) => ({
+        id: feature.id,
+        label: featureLabel(feature),
+        category: feature.category,
+        geometry: feature.geometry.type,
+        propertyKeys: Object.keys(feature.properties ?? {}),
+        bounds: feature.bounds,
+      })),
+    },
+    null,
+    2,
+  );
 
   return (
     <section className="vp active">
