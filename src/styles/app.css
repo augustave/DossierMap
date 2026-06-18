@@ -175,6 +175,7 @@ body::before {
   z-index: var(--z-base);
   margin-top: 34px;
   height: calc(100vh - 34px);
+  overflow-y: auto;
 }
 
 .vp {
